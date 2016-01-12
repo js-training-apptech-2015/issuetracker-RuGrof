@@ -2,15 +2,16 @@
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
+var path = require("path");
 let ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports={
-    context: __dirname + "/app",
+    context: path.join(__dirname,"app"),
     entry: {
         main : "./scripts/main",
           
     },
     output: {
-         path: __dirname + "/public",
+         path: path.join(__dirname,"public"),
          publicPath: "/",
          filename: "[name].js"
     },
@@ -50,11 +51,12 @@ module.exports={
     },
     devServer: {
 
-    host: 'localhost', // default
-    port: 8081,
-    contentBase: __dirname+ '/devServer'
+        host: 'localhost', // default
+        port: 8081,
+        contentBase: path.join(__dirname,"devServer"),
+        historyApiFallback: true
 
-  }
+     }
 };
 
 if(NODE_ENV === 'production'){

@@ -52,7 +52,7 @@
 	  var templates = {};
 	  templates['main'] = __webpack_require__(2);
 	  templates['project-list'] = __webpack_require__(6);
-	  console.log(templates);
+	  console.log("2");
 	  'use strict';
 	  var TemplateView = Backbone.View.extend({
 	    render: function render() {

@@ -1,5 +1,7 @@
-<ul class="nav nav-pills">
-  {{#projects}}
-    <li><a href="#">{{name}}</a></li>
-  {{/projects}}
-</ul>
+<h3 class="text-muted">Select Project</h3>
+<div class="list-group">
+    {{#projects}}
+    <a href="#" class="list-group-item">{{name}}</a>
+    {{/projects}}  
+    <a href="#" class="list-group-item add-new-project"><span class="glyphicon glyphicon-plus-sign"></span>Add new</a>
+</div>

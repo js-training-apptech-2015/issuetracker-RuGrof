@@ -1,34 +1,30 @@
 'use strict';
 import '../styles/main.css';
-import {Projects} from './collection/projects';
-import {Router} from './router/router';
-import {MainView} from './view/main';
+
+import {dispatcher} from './dispatcher';
 (function () {
   'use strict';
     
-  var projectsCollection = new Projects([
-      {
-          name:'project1',
-          numberIssue:3
-      },
-      {
-          name:'project2',
-          numberIssue:4
-      },
-      {
-          name:'project6',
-          numberIssue:7
-      }
-      ]); 
+  //var projectsCollection = new Projects(); 
+ // var dispatcher = _.clone(Backbone.Events);
 
   $(function () {
-    var mainView = new MainView({
+    /*var mainView = new MainView({
       el: $('#application')
     });
     mainView.render();
-    
+    dispatcher.listenTo(mainView, 'test',dispatcher.testFunction);
+    mainView.trigger('test',[1,2,3]);
     new Router();
+    */
+    //dispatcher.renderMainView().renderBreadcrumbView();
+    /*dispatcher.mainView.render();
+    dispatcher.breadcrumbView.render();*/
+    dispatcher.init();
     Backbone.history.start({pushState: true});
-    console.log(projectsCollection);
+    
+    //projectsCollection.fetch();
+   /* console.log(projectsCollection);
+    console.log(dispatcher);*/
   });
 })();

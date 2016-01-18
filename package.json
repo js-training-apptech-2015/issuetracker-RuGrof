@@ -25,5 +25,6 @@
   "bugs": {
     "url": "https://github.com/js-training-apptech-2015/issuetracker-RuGrof/issues"
   },
-  "homepage": "https://github.com/js-training-apptech-2015/issuetracker-RuGrof#readme"
+  "homepage": "https://github.com/js-training-apptech-2015/issuetracker-RuGrof#readme",
+  "devDependencies": {}
 }

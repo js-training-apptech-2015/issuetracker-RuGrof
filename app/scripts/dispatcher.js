@@ -1,6 +1,7 @@
 import {Projects} from './collection/projects';
 import {Router} from './router/router';
 import {MainView} from './view/main';
+import {ProjectListView} from './view/projectList';
 import {BreadcrumbView} from './view/breadcrumb';
 import {Breadcrumb} from './model/Breadcrumb';
 export var dispatcher = _.clone(Backbone.Events);
@@ -34,6 +35,7 @@ dispatcher.renderBreadcrumbView = function(){
     dispatcher.breadcrumbView.render();
     dispatcher.listenTo(dispatcher.breadcrumbView,'test',dispatcher.testFunction);
     console.log('breadcrumbView');
+    return this;
 }
 //test breadcrumb
 dispatcher.breadcrumbModel.set({'route':[
@@ -63,4 +65,14 @@ dispatcher.fetchProjectsCollection = function(options){
         dispatcher.projectsCollection = new Projects();
     }
     return dispatcher.projectsCollection.fetch(options);
+}
+
+dispatcher.renderProjectListView = function (){
+    if(!dispatcher.ProjectListView){
+        dispatcher.ProjectListView = new ProjectListView({
+            collection: dispatcher.projectsCollection,
+            el: $('.content')
+        }); 
+    }
+    dispatcher.ProjectListView.render();
 }

@@ -12,7 +12,9 @@ export var Router = Backbone.Router.extend({
 
     index: function () {
         dispatcher.renderMainView().renderBreadcrumbView();
-        dispatcher.fetchProjectsCollection();
+        dispatcher.fetchProjectsCollection().then(function (){
+            dispatcher.renderProjectListView();
+            });
         
     },
     model: function () {

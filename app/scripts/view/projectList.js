@@ -7,7 +7,7 @@ export var ProjectListView = TemplateView.extend({
     },
     getContext: function () {
         return {
-            projects: [{ name: 'Uno' }, { name: 'Duo' }, { name: 'Tres' }]
+            projects: this.collection ? this.collection.getContext() : {}
         }
     },
 

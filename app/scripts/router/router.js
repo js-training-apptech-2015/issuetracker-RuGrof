@@ -7,7 +7,7 @@ export var Router = Backbone.Router.extend({
     routes: {
         '': 'index',
         'model': 'model',
-        'add': 'addProject'
+        ':nameProject' : 'showProject'
     },
 
     index: function () {
@@ -21,6 +21,9 @@ export var Router = Backbone.Router.extend({
         console.log('Всем привет от model роута!');
     },
     addProject: function () {
-
-    }
+        console.log('route addProject');
+    },
+    showProject: function () {
+        console.log('route showProject');
+    },
 });

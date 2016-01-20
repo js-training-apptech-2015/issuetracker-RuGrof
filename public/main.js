@@ -48,49 +48,33 @@
 	
 	__webpack_require__(1);
 	
+	var _dispatcher = __webpack_require__(2);
+	
 	(function () {
-	  var templates = {};
-	  templates['main'] = __webpack_require__(2);
-	  templates['project-list'] = __webpack_require__(6);
-	  console.log("2");
-	  'use strict';
-	  var TemplateView = Backbone.View.extend({
-	    render: function render() {
-	      var template = templates[this.template];
-	      //this.$el.html(template.render(this.getContext()));
-	      this.$el.html(template(this.getContext()));
-	    },
-	    getContext: function getContext() {
-	      return this.model ? this.model.toJSON() : {};
-	    }
-	  });
+	    'use strict';
 	
-	  var MainView = TemplateView.extend({
-	    template: 'main',
-	    render: function render() {
-	      TemplateView.prototype.render.call(this);
-	      this.projectListView = new ProjectListView({
-	        el: this.$('.js-project-list')
-	      });
-	      this.projectListView.render();
-	    }
-	  });
+	    //var projectsCollection = new Projects();
+	    // var dispatcher = _.clone(Backbone.Events);
 	
-	  var ProjectListView = TemplateView.extend({
-	    template: 'project-list',
-	    getContext: function getContext() {
-	      return {
-	        projects: [{ name: 'Uno' }, { name: 'Duo' }, { name: 'Tres' }]
-	      };
-	    }
-	  });
+	    $(function () {
+	        /*var mainView = new MainView({
+	          el: $('#application')
+	        });
+	        mainView.render();
+	        dispatcher.listenTo(mainView, 'test',dispatcher.testFunction);
+	        mainView.trigger('test',[1,2,3]);
+	        new Router();
+	        */
+	        //dispatcher.renderMainView().renderBreadcrumbView();
+	        /*dispatcher.mainView.render();
+	        dispatcher.breadcrumbView.render();*/
+	        _dispatcher.dispatcher.init();
+	        Backbone.history.start({ pushState: true });
 	
-	  $(function () {
-	    var mainView = new MainView({
-	      el: $('#application')
+	        //projectsCollection.fetch();
+	        /* console.log(projectsCollection);
+	         console.log(dispatcher);*/
 	    });
-	    mainView.render();
-	  });
 	})();
 
 /***/ },
@@ -103,11 +87,246 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var H = __webpack_require__(3);
-	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"header\">\r");t.b("\n" + i);t.b("  <h3 class=\"text-muted\">Select Project</h3>\r");t.b("\n" + i);t.b("  <div class=\"js-project-list\"></div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div class=\"jumbotron\">\r");t.b("\n" + i);t.b("  <h1>Hello world!</h1>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "<div class=\"header\">\r\n  <h3 class=\"text-muted\">Select Project</h3>\r\n  <div class=\"js-project-list\"></div>\r\n</div>\r\n\r\n<div class=\"jumbotron\">\r\n  <h1>Hello world!</h1>\r\n</div>\r\n\r\n", H);return T.render.apply(T, arguments); };
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.dispatcher = undefined;
+	
+	var _projects = __webpack_require__(3);
+	
+	var _router = __webpack_require__(5);
+	
+	var _main = __webpack_require__(6);
+	
+	var _projectList = __webpack_require__(14);
+	
+	var _breadcrumb = __webpack_require__(15);
+	
+	var _Breadcrumb = __webpack_require__(16);
+	
+	var dispatcher = exports.dispatcher = _.clone(Backbone.Events);
+	
+	dispatcher.renderMainView = function () {
+	    if (!dispatcher.mainView) {
+	        dispatcher.mainView = new _main.MainView({
+	            el: $('#application')
+	        });
+	    }
+	    //render once only
+	    if (!dispatcher.mainViewRendered) {
+	        dispatcher.mainView.render();
+	        dispatcher.mainViewRendered = true;
+	    }
+	    return this;
+	};
+	
+	//breadcrumb
+	dispatcher.breadcrumbModel = new _Breadcrumb.Breadcrumb();
+	dispatcher.renderBreadcrumbView = function () {
+	
+	    if (!dispatcher.breadcrumbView) {
+	        dispatcher.breadcrumbView = new _breadcrumb.BreadcrumbView({
+	            model: dispatcher.breadcrumbModel,
+	            el: $('.breadcrumb-line')
+	        });
+	    }
+	    dispatcher.breadcrumbView.render();
+	    dispatcher.listenTo(dispatcher.breadcrumbView, 'test', dispatcher.testFunction);
+	    console.log('breadcrumbView');
+	    return this;
+	};
+	//test breadcrumb
+	dispatcher.breadcrumbModel.set({ 'route': [{ text: 'problem', url: 'projects' }, { text: 123, url: 'projects/123' }] });
+	
+	dispatcher.init = function () {
+	    dispatcher.router = new _router.Router();
+	};
+	
+	dispatcher.testFunction = function (args) {
+	    console.log('test event', args.toElement);
+	    dispatcher.breadcrumbModel.set({ 'route': [{ text: 'issue', url: 'issue' }, { text: 123, url: 'projects/123' }] });
+	    dispatcher.breadcrumbView.render();
+	};
+	
+	//Projects
+	dispatcher.fetchProjectsCollection = function (options) {
+	    if (!dispatcher.projectsCollection) {
+	        dispatcher.projectsCollection = new _projects.Projects();
+	    }
+	    return dispatcher.projectsCollection.fetch(options);
+	};
+	
+	dispatcher.renderProjectListView = function () {
+	    if (!dispatcher.ProjectListView) {
+	        dispatcher.ProjectListView = new _projectList.ProjectListView({
+	            collection: dispatcher.projectsCollection,
+	            el: $('.content')
+	        });
+	    }
+	    dispatcher.ProjectListView.render();
+	};
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Projects = undefined;
+	
+	var _project = __webpack_require__(4);
+	
+	var Projects = exports.Projects = Backbone.Collection.extend({
+	    url: 'http://localhost:3000/projects',
+	    model: _project.Project,
+	    getContext: function getContext() {
+	        var temp = [];
+	        this.forEach(function (model, index) {
+	            temp[index] = {
+	                name: model.get('name'),
+	                numberIssue: model.get('numberIssue')
+	            };
+	        });
+	        return temp;
+	    }
+	
+	});
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var Project = exports.Project = Backbone.Model.extend({
+	    defaults: {
+	        name: '',
+	        numberIssue: 0
+	    },
+	    validate: function validate(attrs, options) {
+	        if (attrs.name === 'add') {
+	            return "Invalid model name";
+	        }
+	    }
+	});
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Router = undefined;
+	
+	var _dispatcher = __webpack_require__(2);
+	
+	var Router = exports.Router = Backbone.Router.extend({
+	    initialize: function initialize(options) {},
+	    routes: {
+	        '': 'index',
+	        ':nameProject': 'showProject'
+	    },
+	
+	    index: function index() {
+	        _dispatcher.dispatcher.renderMainView().renderBreadcrumbView();
+	        _dispatcher.dispatcher.fetchProjectsCollection().then(function () {
+	            _dispatcher.dispatcher.renderProjectListView();
+	        });
+	    },
+	    addProject: function addProject() {
+	        console.log('route addProject');
+	    },
+	    showProject: function showProject(nameProject) {
+	        console.log(nameProject);
+	    }
+	});
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.MainView = undefined;
+	
+	var _template = __webpack_require__(7);
+	
+	/*import {ProjectListView} from './projectList';
+	import {BreadcrumbView} from './breadcrumb';
+	import {Breadcrumb} from '../model/Breadcrumb';*/
+	/*export var MainView = TemplateView.extend({
+	  template: 'main',
+	  render: function () {
+	    TemplateView.prototype.render.call(this);
+	    this.projectListView = new ProjectListView({
+	      el: this.$('.js-project-list')
+	    }).render();
+	    
+	    var breadcrumb = new Breadcrumb();
+	    breadcrumb.set({'route':[
+	        {text:'problem', url:'projects'},
+	        {text: 123, url:'projects/123'}
+	        ]});
+	    this.breadcrumbView = new BreadcrumbView({
+	        model:breadcrumb,
+	        el: this.$('.breadcrumb-line')
+	    }).render();
+	    
+	    //console.log(breadcrumb.get('route'));
+	  }
+	});*/
+	var MainView = exports.MainView = _template.TemplateView.extend({
+	    template: 'main'
+	});
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var templates = {};
+	templates['main'] = __webpack_require__(8);
+	templates['project-list'] = __webpack_require__(12);
+	templates['breadcrumb'] = __webpack_require__(13);
+	
+	var TemplateView = exports.TemplateView = Backbone.View.extend({
+	    render: function render() {
+	        var template = templates[this.template];
+	        this.$el.html(template(this.getContext()));
+	        return this;
+	    },
+	    getContext: function getContext() {
+	        return this.model ? this.model.toJSON() : {};
+	    }
+	});
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var H = __webpack_require__(9);
+	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"header\">\r");t.b("\n" + i);t.b("  \r");t.b("\n" + i);t.b("  <div class=\"breadcrumb-line\">\r");t.b("\n" + i);t.b("  </div>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n" + i);t.b("<div class=\"content\">\r");t.b("\n" + i);t.b("    <h3 class=\"text-muted\">Select Project</h3>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n" + i);t.b("\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "<div class=\"header\">\r\n  \r\n  <div class=\"breadcrumb-line\">\r\n  </div>\r\n</div>\r\n\r\n<div class=\"content\">\r\n    <h3 class=\"text-muted\">Select Project</h3>\r\n</div>\r\n\r\n", H);return T.render.apply(T, arguments); };
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -129,13 +348,13 @@
 	
 	// This file is for use with Node.js. See dist/ for browser files.
 	
-	var Hogan = __webpack_require__(4);
-	Hogan.Template = __webpack_require__(5).Template;
+	var Hogan = __webpack_require__(10);
+	Hogan.Template = __webpack_require__(11).Template;
 	Hogan.template = Hogan.Template;
 	module.exports = Hogan;
 
 /***/ },
-/* 4 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -555,7 +774,7 @@
 	})( true ? exports : Hogan);
 
 /***/ },
-/* 5 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -902,11 +1121,99 @@
 	})( true ? exports : Hogan);
 
 /***/ },
-/* 6 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var H = __webpack_require__(3);
-	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<ul class=\"nav nav-pills\">\r");t.b("\n" + i);if(t.s(t.f("projects",c,p,1),c,p,0,43,86,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("    <li><a href=\"#\">");t.b(t.v(t.f("name",c,p,0)));t.b("</a></li>\r");t.b("\n" + i);});c.pop();}t.b("</ul>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "<ul class=\"nav nav-pills\">\r\n  {{#projects}}\r\n    <li><a href=\"#\">{{name}}</a></li>\r\n  {{/projects}}\r\n</ul>\r\n", H);return T.render.apply(T, arguments); };
+	var H = __webpack_require__(9);
+	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<h3 class=\"text-muted\">Select Project</h3>\r");t.b("\n" + i);t.b("<div class=\"list-group\">\r");t.b("\n" + i);if(t.s(t.f("projects",c,p,1),c,p,0,87,170,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("    <a href=\"#");t.b(t.v(t.f("name",c,p,0)));t.b("\" class=\"list-group-item project-button\">");t.b(t.v(t.f("name",c,p,0)));t.b("</a>\r");t.b("\n" + i);});c.pop();}t.b("    <a href=\"#\" class=\"list-group-item add-new-project\"><span class=\"glyphicon glyphicon-plus-sign\"></span>Add new</a>\r");t.b("\n" + i);t.b("</div>\r");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "<h3 class=\"text-muted\">Select Project</h3>\r\n<div class=\"list-group\">\r\n    {{#projects}}\r\n    <a href=\"#{{name}}\" class=\"list-group-item project-button\">{{name}}</a>\r\n    {{/projects}}  \r\n    <a href=\"#\" class=\"list-group-item add-new-project\"><span class=\"glyphicon glyphicon-plus-sign\"></span>Add new</a>\r\n</div>\r\n", H);return T.render.apply(T, arguments); };
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var H = __webpack_require__(9);
+	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<ul id=\"breadcrumb\">\r");t.b("\n" + i);t.b("    <li><a href=\"#\"><span class=\"icon glyphicon glyphicon-home\"> </span>Home</a></li>\r");t.b("\n" + i);if(t.s(t.f("route",c,p,1),c,p,0,123,219,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("        <li><a href=\"#");t.b(t.v(t.f("url",c,p,0)));t.b("\"><span class=\"icon icon-beaker\"> </span> ");t.b(t.v(t.f("text",c,p,0)));t.b("</a></li>\r");t.b("\n" + i);});c.pop();}t.b("</ul>");return t.fl(); },partials: {}, subs: {  }}, "<ul id=\"breadcrumb\">\r\n    <li><a href=\"#\"><span class=\"icon glyphicon glyphicon-home\"> </span>Home</a></li>\r\n    {{#route}}\r\n        <li><a href=\"#{{url}}\"><span class=\"icon icon-beaker\"> </span> {{text}}</a></li>\r\n    {{/route}}  \r\n</ul>", H);return T.render.apply(T, arguments); };
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ProjectListView = undefined;
+	
+	var _template = __webpack_require__(7);
+	
+	var ProjectListView = exports.ProjectListView = _template.TemplateView.extend({
+	    template: 'project-list',
+	    events: {
+	        "click .add-new-project": "addNewProject",
+	        "click .project-button": "showProject"
+	    },
+	    getContext: function getContext() {
+	        return {
+	            projects: this.collection ? this.collection.getContext() : {}
+	        };
+	    },
+	
+	    addNewProject: function addNewProject() {
+	        console.log("Add new project");
+	        return false;
+	    },
+	    showProject: function showProject() {
+	        console.log("showProject");
+	        return false;
+	    }
+	});
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.BreadcrumbView = undefined;
+	
+	var _template = __webpack_require__(7);
+	
+	var _dispatcher = __webpack_require__(2);
+	
+	var BreadcrumbView = exports.BreadcrumbView = _template.TemplateView.extend({
+	    template: 'breadcrumb',
+	    getContext: function getContext() {
+	        return {
+	            route: this.model ? this.model.get('route') : {}
+	        };
+	    },
+	    events: {
+	        "click #breadcrumb": 'tester'
+	    },
+	    tester: function tester(e) {
+	        this.trigger('test', e);
+	        return false;
+	    }
+	});
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var Breadcrumb = exports.Breadcrumb = Backbone.Model.extend({
+	    defaults: {
+	        route: []
+	    }
+	});
 
 /***/ }
 /******/ ]);

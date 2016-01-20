@@ -76,3 +76,24 @@ dispatcher.renderProjectListView = function (){
     }
     dispatcher.ProjectListView.render();
 }
+
+/**
+ * Render MainView and breadcrumbView
+ */
+dispatcher.renderMainTemplates = function(){
+    return new Promise(function(resolve,reject){
+          dispatcher.renderMainView().renderBreadcrumbView();
+          resolve();
+    });
+}
+
+/**
+ * Render ProjectList for router
+ */
+dispatcher.renderProjectListRouterIndex = function () {
+    dispatcher.renderMainTemplates().then(function () {
+        return dispatcher.fetchProjectsCollection()
+    }).then(function(){
+            dispatcher.renderProjectListView();
+    });
+}

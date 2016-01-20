@@ -6,19 +6,11 @@ export var Router = Backbone.Router.extend({
     },
     routes: {
         '': 'index',
-        'model': 'model',
         ':nameProject' : 'showProject'
     },
 
     index: function () {
-        dispatcher.renderMainView().renderBreadcrumbView();
-        dispatcher.fetchProjectsCollection().then(function (){
-            dispatcher.renderProjectListView();
-            });
-        
-    },
-    model: function () {
-        console.log('Всем привет от model роута!');
+        dispatcher.renderProjectListRouterIndex();        
     },
     addProject: function () {
         console.log('route addProject');

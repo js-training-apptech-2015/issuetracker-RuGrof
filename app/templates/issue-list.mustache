@@ -1,0 +1,7 @@
+<h3 class=".name-project-title">{{nameProject}}</h3>
+<div class="list-group">
+    {{#issue}}
+    <a href="#/{{projectName}}/{{issueId}}" class="list-group-item project-button">{{name}}</a>
+    {{/issue}}  
+    <a href="#/{{projectName}}/add" class="list-group-item add-new-issue"><span class="glyphicon glyphicon-plus-sign"></span>Add new</a>
+</div>

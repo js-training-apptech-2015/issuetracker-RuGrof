@@ -23,7 +23,7 @@ export var Router = Backbone.Router.extend({
     addProject: function () {
         console.log('route addProject');
     },
-    showProject: function () {
-        console.log('route showProject');
+    showProject: function (nameProject) {
+        console.log(nameProject);
     },
 });
